@@ -1,0 +1,26 @@
+#JSGF V1.0;
+
+grammar dialog;
+
+<digit> = oh    |
+          zero  |
+          one   |
+          two   |
+          three |
+          four  |
+          five  |
+          six   |
+          seven |
+          eight |
+          nine  ;
+
+<number> = <digit>+ [point <digit>+];
+
+<menu_command> =  a | b | c | d | e | f | g | chord;
+
+<bank_command> = [show | check] balance |
+                 deposit <number>       |
+                 withdraw <number>      |
+                 back                   ;
+
+public <command> = <menu_command> | <bank_command>;

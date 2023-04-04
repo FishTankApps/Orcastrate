@@ -1,0 +1,10 @@
+#JSGF V1.0;
+
+grammar testing;
+
+<music_note> = ( a | b | c | d | e | f | g ) [ [double]  ( flat | sharp ) ];
+<music_mode> = ( major | minor );
+
+<music_key> = <music_note> <music_mode>;
+
+public <command> = play a <music_key> scale | introduce yourself;
