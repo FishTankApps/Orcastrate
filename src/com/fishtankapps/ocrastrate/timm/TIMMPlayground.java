@@ -9,7 +9,7 @@ public class TIMMPlayground {
 		TIMM.getInstance().startListening();
 		
 		TIMM.getInstance().addWordDetectionListener((word) -> {
-				//System.out.println(word.getHypothesis()); 
+				//System.out.println(word.getHypothesis());  
 				String command = word.getHypothesis();
 				
 				if (command.equals("introduce yourself")) {
