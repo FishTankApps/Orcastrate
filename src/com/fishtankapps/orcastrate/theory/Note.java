@@ -1,6 +1,8 @@
 package com.fishtankapps.orcastrate.theory;
 
-public enum Note {
+import com.fishtankapps.ocrastrate.timm.Speakable;
+
+public enum Note implements Speakable {
 	A, B, C, D, E, F, G;
 	
 	public Note getNextNote() {
@@ -29,5 +31,8 @@ public enum Note {
 			default:
 				throw new RuntimeException("Error finding next note - Reached \"unreachable\" code.");
 		}
+	}
+	public String toSpeakableString() {
+		return name();
 	}
 }

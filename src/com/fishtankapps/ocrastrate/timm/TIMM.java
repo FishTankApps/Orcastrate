@@ -17,21 +17,19 @@ import edu.cmu.sphinx.api.SpeechResult;
 
 public class TIMM {
 
-	private ArrayList<WordDetectionListener> wordDetectionListeners;
-	private LiveSpeechRecognizer recognizer;	
-	private Thread wordDetectionThread;
-	
-	private VirtualPiano piano;
-	
-	private Voice voice;
-	
-	private TIMM() {
-		initializeSpeechDetection();
-		initializeTextToSpeech();
-		initializeVirtualPiano();
+	static {
+		initialize();
 	}
 	
-	private void initializeSpeechDetection() {
+	private static ArrayList<WordDetectionListener> wordDetectionListeners;
+	private static LiveSpeechRecognizer recognizer;	
+	private static Thread wordDetectionThread;
+	
+	private static VirtualPiano piano;
+	
+	private static Voice voice;
+	
+	private static void initializeSpeechDetection() {
 		Configuration configuration = new Configuration();
 		configuration.setAcousticModelPath("resource:/edu/cmu/sphinx/models/en-us/en-us");
 		configuration.setDictionaryPath("resource:/edu/cmu/sphinx/models/en-us/cmudict-en-us.dict");
@@ -47,11 +45,16 @@ public class TIMM {
 			recognizer = new LiveSpeechRecognizer(configuration);
 			
 			wordDetectionThread = new Thread( () -> {
-					while(!Thread.interrupted() && recognizer != null) {
-						SpeechResult result = recognizer.getResult();						
-						for(WordDetectionListener listener : wordDetectionListeners)
-							new Thread( () -> listener.onWordDetected(result) ).start();
-					}
+					System.out.println("Ready to Listen");
+					try {
+						while(!Thread.interrupted() && recognizer != null) {
+							SpeechResult result = recognizer.getResult();						
+							for(WordDetectionListener listener : wordDetectionListeners)
+								new Thread( () -> listener.onWordDetected(result) ).start();
+						}
+					} catch (Exception e) {
+						System.out.println("WordDetectionThread exception: " + e.getLocalizedMessage());
+					}					
 				});
 			
 		} catch (Exception e) {
@@ -59,15 +62,15 @@ public class TIMM {
 			e.printStackTrace();
 		}
 	}
-	private void initializeTextToSpeech() {
+	private static void initializeTextToSpeech() {
 		System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
 	    voice = VoiceManager.getInstance().getVoice("kevin16");
 	    if (voice != null) {
 	        voice.allocate();// Allocating Voice
 	        try {
-	            //voice.setRate(120);  // Setting the rate of the voice
-	            //voice.setPitch(150); // Setting the Pitch of the voice
-	            //voice.setVolume(3);  // Setting the volume of the voice
+	            voice.setRate(240);  // Setting the rate of the voice
+	            voice.setPitch(100); // Setting the Pitch of the voice
+	            voice.setVolume(1);  // Setting the volume of the voice
 	        } catch (Exception e1) {
 	        	System.err.println("Error setting up text to speech.");
 	            e1.printStackTrace();
@@ -78,24 +81,24 @@ public class TIMM {
 	        throw new IllegalStateException("Cannot find voice: kevin16");
 	    }
 	}
-	private void initializeVirtualPiano() {
+	private static void initializeVirtualPiano() {
 		piano = new VirtualPiano();
 	}
 	
-	public void addWordDetectionListener(WordDetectionListener listener) {
+	public static void addWordDetectionListener(WordDetectionListener listener) {
 		wordDetectionListeners.add(listener);
 	}
 	
-	public void startListening() {
+	public static void startListening() {
 		recognizer.startRecognition(true);
 		wordDetectionThread.start();
 	}
 	
-	public void speak(String text) {
+	public static void speak(String text) {
 		voice.speak(text);
 	}
 	
-	public void playANote() {
+	public static void playANote() {
 		try {
 			piano.playNoteAsync(Pitch.C_NATURAL_4, 100, 1000);
 		} catch (InvalidMidiDataException e) {
@@ -103,7 +106,7 @@ public class TIMM {
 		}
 	}
 	
-	public void playScale(Key key) {
+	public static void playScale(Key key) {
 
 		try {
 			AppliedAccidental[] notes = key.getNotesInKey();
@@ -122,21 +125,15 @@ public class TIMM {
 		}
 	}
 	
-	
-	private static TIMM timm = null;	
-	public static TIMM getInstance() {
-		return timm;
+	private static void initialize() {
+		initializeSpeechDetection();
+		initializeTextToSpeech();
+		initializeVirtualPiano();
 	}
-	public static void initialize() {
-		if(timm == null)
-			timm = new TIMM();
+	public static void close() {
+		wordDetectionThread.interrupt();
+		recognizer.stopRecognition();
+		recognizer = null;
 	}
 
-	public static void close() {
-		if(timm != null) {
-			timm.wordDetectionThread.interrupt();
-			timm.recognizer.stopRecognition();
-			timm.recognizer = null;
-		}
-	}
 }

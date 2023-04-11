@@ -7,4 +7,8 @@ grammar testing;
 
 <music_key> = <music_note> <music_mode>;
 
-public <command> = play a <music_key> scale | introduce yourself;
+public <command> = (play a <music_key> scale) |
+                   (introduce yourself) | 
+                   //goodbye | 
+                   thank you |
+                   (what notes are in a <music_key> scale);

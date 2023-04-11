@@ -198,6 +198,6 @@ public enum Pitch {
     	return A4_FREQ * Math.pow(2d, (midiKey - 69)/12d);
     }
 
-    public static PitchFilter NATURAL_AND_SHARPS_FILTER = (pitch) -> 
+    public static PitchFilter TWELEVE_TONE_NATURAL_AND_SHARPS_FILTER = (pitch) -> 
     					{return pitch.getAccidental() == Accidental.NATURAL || pitch.getAccidental() == Accidental.SHARP;};
 }

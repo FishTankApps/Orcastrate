@@ -1,6 +1,8 @@
 package com.fishtankapps.orcastrate.theory;
 
-public enum Accidental {
+import com.fishtankapps.ocrastrate.timm.Speakable;
+
+public enum Accidental implements Speakable {
 
 	DOUBLE_FLAT("bb"), FLAT("b"), NATURAL(""), SHARP("#"), DOUBLE_SHARP("x");
 	
@@ -8,5 +10,9 @@ public enum Accidental {
 	
 	private Accidental(String textSymbol) {
 		this.textSymbol = textSymbol;
+	}
+
+	public String toSpeakableString() {
+		return name().replace('_', ' ');
 	}
 }

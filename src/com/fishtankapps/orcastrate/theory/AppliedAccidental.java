@@ -1,6 +1,8 @@
 package com.fishtankapps.orcastrate.theory;
 
-public enum AppliedAccidental {
+import com.fishtankapps.ocrastrate.timm.Speakable;
+
+public enum AppliedAccidental implements Speakable {
 
 	A_DOUBLE_FLAT(Note.A, Accidental.DOUBLE_FLAT, -2), A_FLAT(Note.A, Accidental.FLAT, -1), A_NATURAL(Note.A, Accidental.NATURAL, 0),  A_SHARP(Note.A, Accidental.SHARP, 1),  A_DOUBLE_SHARP(Note.A, Accidental.DOUBLE_SHARP, 2),
 	B_DOUBLE_FLAT(Note.B, Accidental.DOUBLE_FLAT, 0),  B_FLAT(Note.B, Accidental.FLAT, 1),  B_NATURAL(Note.B, Accidental.NATURAL, 2),  B_SHARP(Note.B, Accidental.SHARP, 3),  B_DOUBLE_SHARP(Note.B, Accidental.DOUBLE_SHARP, 4),
@@ -28,7 +30,7 @@ public enum AppliedAccidental {
 		return note;
 	}
 	
-	public int getIntervalValue() {
+	int getIntervalValue() {
 		return value;
 	}
 	
@@ -42,6 +44,11 @@ public enum AppliedAccidental {
 				return aa;
 		
 		throw new RuntimeException("Error applying accidental - Reached \"unreachable\" code.");
+	}
+
+	@Override
+	public String toSpeakableString() {
+		return note.toSpeakableString() + " " + accidental.toSpeakableString();
 	}
 		
 }
